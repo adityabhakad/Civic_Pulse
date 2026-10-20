@@ -1,0 +1,29 @@
+# Build output and dependency caches
+backend/target/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/cache/
+frontend/.angular/vite/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+application-local.properties
+application-secret.properties
+*.pem
+*.key
+
+# IDE and operating system files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs and local database exports
+*.log
+*.sql
+*.dump

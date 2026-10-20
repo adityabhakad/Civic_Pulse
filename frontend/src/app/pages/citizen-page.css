@@ -1,0 +1,22 @@
+.citizen-welcome { gap: 24px; }
+.citizen-welcome > div:first-child { max-width: 640px; }
+.citizen-welcome h1 { margin: 0; color: #192c4a; font: 800 29px/1.2 Manrope,sans-serif; letter-spacing: -.8px; }
+.citizen-welcome h1 span { color: #2865d8; }
+.citizen-welcome .intro { max-width: 550px; line-height: 1.6; }
+.citizen-actions { display: flex; flex-wrap: wrap; gap: 9px; flex: 0 0 auto; }
+.citizen-recent { margin-top: 23px; }
+.citizen-recent .panel-heading { align-items: center; }
+.citizen-recent .text-link { white-space: nowrap; }
+.dashboard-loading { min-height: 200px; }
+.compact { min-height: 31px; padding: 6px 10px; font-size: 11px; }
+.report-title { display: inline-block; }
+@media (max-width: 760px) {
+  .citizen-welcome { align-items: flex-start; flex-direction: column; }
+  .citizen-actions { width: 100%; }
+  .citizen-actions .button { flex: 1; justify-content: center; }
+  .citizen-recent .panel-heading { align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .citizen-welcome h1 { font-size: 24px; }
+  .citizen-actions { flex-direction: column; }
+}

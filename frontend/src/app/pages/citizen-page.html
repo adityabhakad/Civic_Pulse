@@ -1,0 +1,20 @@
+<section class="welcome citizen-welcome">
+  <div><p class="eyebrow">CITIZEN DASHBOARD</p><h1>Welcome, <span>{{ displayName }}</span></h1><p class="intro">Your reports help improve your neighborhood. Follow progress or submit an issue that needs attention.</p></div>
+  <div class="citizen-actions"><a class="button primary" routerLink="/citizen/complaints/new">＋ Report an issue</a><a class="button secondary" routerLink="/citizen/complaints">My complaints</a></div>
+</section>
+@if (error && !complaints.length) { <div class="alert" role="alert"><span>{{ error }}</span><button class="button secondary" type="button" (click)="load()">Retry</button></div><div class="panel state empty"><h3>Your reports could not be loaded</h3><p>Retry to get the latest complaint summary.</p></div> }
+@else if (loading) { <div class="state dashboard-loading" role="status"><span class="spinner"></span><p>Loading your dashboard…</p></div> }
+@else {
+  @if (error) { <div class="alert" role="alert"><span>{{ error }}</span><button class="button secondary" type="button" (click)="load()">Retry</button></div> }
+  <section class="stats" aria-label="Your complaint statistics">
+    <article class="stat-card"><span class="stat-icon blue" aria-hidden="true">▤</span><div><p>My complaints</p><strong>{{ complaints.length }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon amber" aria-hidden="true">◷</span><div><p>Pending</p><strong>{{ count('PENDING') }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon violet" aria-hidden="true">↻</span><div><p>In progress</p><strong>{{ count('IN_PROGRESS') }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon green" aria-hidden="true">✓</span><div><p>Resolved</p><strong>{{ count('RESOLVED') }}</strong></div></article>
+  </section>
+  <section class="panel citizen-recent">
+    <div class="panel-heading"><div><h2>Recent updates</h2><p>The latest reports submitted from your account</p></div><a class="text-link" routerLink="/citizen/complaints">View all complaints →</a></div>
+    @if (!complaints.length) { <div class="state empty"><div class="empty-icon" aria-hidden="true">⌖</div><h3>No reports yet</h3><p>Submit a local issue to start tracking its progress.</p><a class="button primary" routerLink="/citizen/complaints/new">Report your first issue</a></div> }
+    @else { <div class="table-scroll"><table><thead><tr><th>COMPLAINT</th><th>CATEGORY</th><th>STATUS</th><th>SUBMITTED</th><th>ACTION</th></tr></thead><tbody>@for (item of complaints.slice(0, 5); track item.id) { <tr><td><a class="report-title report-link" [routerLink]="['/citizen/complaints', item.id]">{{ item.title }}</a><small>#{{ item.id }} · {{ item.location }}</small></td><td><span class="category">{{ item.category }}</span></td><td><span class="status" [class]="'status ' + item.status.toLowerCase().replace('_','-')"><i></i>{{ item.status.replace('_',' ') | titlecase }}</span></td><td>{{ item.submittedAt ? (item.submittedAt | date:'mediumDate') : 'Date unavailable' }}</td><td><a class="button secondary compact" [routerLink]="['/citizen/complaints', item.id]">View</a></td></tr> }</tbody></table></div> }
+  </section>
+}

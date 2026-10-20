@@ -1,0 +1,17 @@
+﻿<header class="topbar">
+  <app-brand-logo />
+  <nav class="nav-links" aria-label="Main navigation">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    @if (auth.user(); as user) {
+      <a [routerLink]="user.role === 'ADMIN' ? '/admin' : '/citizen'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a [routerLink]="user.role === 'ADMIN' ? '/admin/complaints' : '/citizen/complaints'" routerLinkActive="active">{{ user.role === 'ADMIN' ? 'Complaint Management' : 'My complaints' }}</a>
+      <span class="nav-user"><span class="nav-user-name">{{ navDisplayName(user) }}</span><small>{{ user.role === 'ADMIN' ? 'Admin' : 'Citizen' }}</small></span>
+      <button class="nav-logout" type="button" (click)="logout()">Log out</button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Sign in</a>
+      <a class="button primary nav-register" routerLink="/register">Register</a>
+    }
+  </nav>
+</header>
+<main class="page"><router-outlet /></main>
+<footer class="site-footer"><app-brand-logo /><span>Making every neighborhood heard.</span></footer>

@@ -1,0 +1,12 @@
+.admin-detail-panel { max-width: 790px; }
+.admin-detail-panel .form-heading h1 { overflow-wrap: anywhere; }
+.admin-detail-panel .field { max-width: 340px; }
+.admin-detail-panel .form-actions { justify-content: space-between; }
+.danger-button { border: 1px solid #f1d1ce; background: #fff6f5; color: #b74238; }
+.danger-button:hover { background: #ffebe9; }
+.detail-grid { margin-top: 8px; }
+@media (max-width: 560px) {
+  .admin-detail-panel { padding: 23px 18px; }
+  .admin-detail-panel .form-actions { align-items: stretch; flex-direction: column; }
+  .admin-detail-panel .form-actions .button { justify-content: center; }
+}

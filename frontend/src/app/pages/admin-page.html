@@ -1,0 +1,61 @@
+﻿<section class="welcome admin-welcome">
+  <div>
+    <p class="eyebrow">CIVICPULSE · ADMIN</p>
+    <h1>Community <span>overview.</span></h1>
+    <p class="intro">Review civic activity and keep citizen reports moving toward resolution.</p>
+  </div>
+  <div class="admin-badge">ADMIN</div>
+</section>
+
+@if (error) { <div class="alert" role="alert"><span>{{ error }}</span><button class="button secondary" type="button" (click)="load()">Retry</button></div> }
+@if (loading) {
+  <div class="state dashboard-loading" role="status"><span class="spinner"></span><p>Loading community overview…</p></div>
+} @else if (error && !complaints.length) {
+  <section class="panel state empty"><h3>Analytics are unavailable</h3><p>Retry to load the latest complaint data.</p><button class="button secondary" type="button" (click)="load()">Retry</button></section>
+} @else {
+  <section class="stats" aria-label="Complaint totals">
+    <article class="stat-card"><span class="stat-icon blue" aria-hidden="true">▤</span><div><p>Total complaints</p><strong>{{ complaints.length }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon amber" aria-hidden="true">◷</span><div><p>Pending</p><strong>{{ count('PENDING') }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon violet" aria-hidden="true">↻</span><div><p>In progress</p><strong>{{ count('IN_PROGRESS') }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon green" aria-hidden="true">✓</span><div><p>Resolved</p><strong>{{ count('RESOLVED') }}</strong></div></article>
+  </section>
+
+  <section class="analytics-summary" aria-label="Key service metrics">
+    <article class="summary-card"><span>Resolution rate</span><strong>{{ resolutionRate }}%</strong><small>Complaints marked resolved</small></article>
+    <article class="summary-card"><span>Open complaints</span><strong>{{ openCount }}</strong><small>Pending or in progress</small></article>
+    <article class="summary-card"><span>Most reported category</span><strong>{{ topCategory }}</strong><small>Based on current complaints</small></article>
+  </section>
+
+  <section class="analytics-grid" aria-label="Complaint analytics">
+    <article class="analytics-card status-chart-card">
+      <div class="analytics-heading"><div><p class="eyebrow">STATUS MIX</p><h2>Complaint status</h2></div><span class="chart-total">{{ complaints.length }} total</span></div>
+      @if (complaints.length) {
+        <div class="status-chart-content">
+          <div class="donut-chart" [style.background]="statusChartBackground" role="img" [attr.aria-label]="'Complaint status breakdown: ' + count('PENDING') + ' pending, ' + count('IN_PROGRESS') + ' in progress, ' + count('RESOLVED') + ' resolved'"><div class="donut-center"><strong>{{ complaints.length }}</strong><span>reports</span></div></div>
+          <ul class="status-legend">@for (status of statusSummary; track status.key) { <li><span class="legend-dot" [class.pending]="status.key === 'PENDING'" [class.progress]="status.key === 'IN_PROGRESS'" [class.resolved]="status.key === 'RESOLVED'"></span><span>{{ status.label }}</span><strong>{{ count(status.key) }}</strong></li> }</ul>
+        </div>
+      } @else { <div class="chart-empty">Chart data will appear after citizens submit reports.</div> }
+    </article>
+
+    <article class="analytics-card category-chart-card">
+      <div class="analytics-heading"><div><p class="eyebrow">REPORT VOLUME</p><h2>Complaints by category</h2></div></div>
+      @if (complaints.length) {
+        <div class="category-bars">@for (category of categories; track category) { <div class="category-bar-row"><div class="category-bar-label"><span>{{ category }}</span><strong>{{ categoryCount(category) }}</strong></div><div class="category-track" role="img" [attr.aria-label]="categoryCount(category) + ' complaints in ' + category"><span [style.width.%]="categoryWidth(category)"></span></div></div> }</div>
+      } @else { <div class="chart-empty">Category data will appear after citizens submit reports.</div> }
+    </article>
+
+    @if (hasSubmissionDates) {
+      <article class="analytics-card trend-chart-card">
+        <div class="analytics-heading"><div><p class="eyebrow">LAST SIX MONTHS</p><h2>Submission trend</h2></div><span class="chart-total">{{ monthlyTrendTotal }} reports</span></div>
+        <div class="trend-chart" role="img" [attr.aria-label]="'Monthly complaints submitted: ' + monthlyTrendDescription">@for (month of monthlyTrend; track month.key) { <div class="trend-column" [title]="month.label + ': ' + month.count + ' complaints'"><span class="trend-count">{{ month.count }}</span><div class="trend-track"><span class="trend-fill" [style.height.%]="trendHeight(month.count)"></span></div><span class="trend-label">{{ month.label }}</span></div> }</div>
+        @if (!monthlyTrendTotal) { <p class="chart-note">No dated reports were submitted in the last six months.</p> }
+      </article>
+    }
+  </section>
+
+  <section class="panel recent-panel">
+    <div class="panel-heading"><div><h2>Recent complaints</h2><p>The latest submissions from the community</p></div><a class="text-link" routerLink="/admin/complaints">Manage all complaints →</a></div>
+    @if (!complaints.length) { <div class="state empty"><h3>No complaints submitted yet</h3><p>Citizen reports will appear here when submitted.</p></div> }
+    @else { <div class="table-scroll"><table><thead><tr><th>COMPLAINT</th><th>CATEGORY</th><th>LOCATION</th><th>CITIZEN</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>@for (item of complaints.slice(0, 5); track item.id) { <tr><td><a class="report-title report-link" [routerLink]="['/admin/complaints', item.id]">{{ item.title }}</a><small>#{{ item.id }} · {{ item.description }}</small></td><td><span class="category">{{ item.category }}</span></td><td>{{ item.location }}</td><td>{{ item.citizenName || 'Name unavailable' }}</td><td><span class="status" [class]="'status ' + item.status.toLowerCase().replace('_','-')"><i></i>{{ item.status.replace('_',' ') }}</span></td><td><a class="button secondary compact" [routerLink]="['/admin/complaints', item.id]">View</a></td></tr> }</tbody></table></div> }
+  </section>
+}

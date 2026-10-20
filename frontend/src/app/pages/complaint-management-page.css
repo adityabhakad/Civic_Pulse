@@ -1,0 +1,30 @@
+.management-heading { align-items: end; }
+.management-heading .button { flex: 0 0 auto; }
+.management-panel { overflow: hidden; }
+.management-toolbar { align-items: center; }
+.management-filters { display: flex; align-items: center; justify-content: flex-end; gap: 9px; }
+.management-filters .search { width: min(290px, 28vw); }
+.management-table { min-width: 1000px; }
+.management-table th, .management-table td { padding-inline: 13px; }
+.management-table th:first-child, .management-table td:first-child { padding-left: 22px; }
+.management-table th:last-child, .management-table td:last-child { padding-right: 22px; }
+.complaint-id { color: #7a8ba3; font-variant-numeric: tabular-nums; }
+.complaint-cell { min-width: 230px; max-width: 300px; }
+.complaint-cell small { display: block; max-width: 270px; margin-top: 5px; overflow: hidden; color: #8795aa; text-overflow: ellipsis; }
+.location-cell { min-width: 155px; max-width: 220px; white-space: normal; }
+.actions { min-width: 160px; align-items: center; }
+.button.compact { min-height: 30px; padding: 6px 10px; font-size: 11px; }
+.alert { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.alert .button { flex: 0 0 auto; }
+@media (max-width: 900px) {
+  .management-toolbar { align-items: flex-start; }
+  .management-filters { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+  .management-filters .search { width: 100%; }
+  .management-filters .filter-select { flex: 1 1 145px; }
+}
+@media (max-width: 600px) {
+  .management-heading { align-items: flex-start; }
+  .management-heading .button { width: 100%; }
+  .management-filters .filter-select { min-width: 0; }
+  .alert { align-items: flex-start; flex-direction: column; }
+}

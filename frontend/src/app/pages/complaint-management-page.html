@@ -1,0 +1,50 @@
+<section class="page-heading management-heading">
+  <div>
+    <p class="eyebrow">{{ isAdmin ? 'CIVICPULSE ADMIN' : 'YOUR CIVICPULSE ACCOUNT' }}</p>
+    <h1>{{ isAdmin ? 'Complaint management' : 'My complaints' }}</h1>
+    <p>{{ isAdmin ? 'Review community reports and keep every status current.' : 'Follow your reports and make changes while they are pending.' }}</p>
+  </div>
+  @if (!isAdmin) { <a class="button primary" routerLink="/citizen/complaints/new">＋ Report an issue</a> }
+</section>
+
+@if (error) { <div class="alert" role="alert"><span>{{ error }}</span><button class="button secondary" type="button" (click)="load()">Retry</button></div> }
+@if (success) { <div class="success" role="status">{{ success }}</div> }
+
+<section class="panel management-panel">
+  <div class="panel-heading management-toolbar">
+    <div><h2>{{ isAdmin ? 'All complaints' : 'Your reports' }}</h2><p>{{ isAdmin ? 'Search, filter, review, and update submissions.' : 'Search and filter your submitted reports.' }}</p></div>
+    <div class="management-filters">
+      <label class="search"><span aria-hidden="true">⌕</span><input aria-label="Search complaints" placeholder="Search title, category, or location" [value]="search" (input)="search=$any($event.target).value"></label>
+      <select aria-label="Filter by category" class="filter-select" [value]="categoryFilter" (change)="categoryFilter=$any($event.target).value">
+        <option value="ALL">All categories</option>
+        @for (category of categories; track category) { <option [value]="category">{{ category }}</option> }
+      </select>
+      <select aria-label="Filter by status" class="filter-select" [value]="statusFilter" (change)="statusFilter=$any($event.target).value">
+        <option value="ALL">All statuses</option><option value="PENDING">Pending</option><option value="IN_PROGRESS">In progress</option><option value="RESOLVED">Resolved</option>
+      </select>
+    </div>
+  </div>
+  @if (loading) {
+    <div class="state" role="status"><span class="spinner"></span><p>Loading complaints…</p></div>
+  } @else if (error && !complaints.length) {
+    <div class="state empty"><h3>Complaint list unavailable</h3><p>Retry to load the latest reports.</p><button class="button secondary" type="button" (click)="load()">Retry</button></div>
+  } @else if (!filtered.length) {
+    <div class="state empty"><div class="empty-icon" aria-hidden="true">⌖</div><h3>{{ complaints.length ? 'No matching complaints' : (isAdmin ? 'No complaints submitted yet' : 'No reports yet') }}</h3><p>{{ complaints.length ? 'Try changing your search or filters.' : (isAdmin ? 'Citizen submissions will appear here.' : 'Report a local issue to start tracking its progress.') }}</p>@if (!isAdmin && !complaints.length) { <a class="button primary" routerLink="/citizen/complaints/new">＋ Report an issue</a> }</div>
+  } @else {
+    <div class="table-scroll"><table class="management-table"><thead><tr><th>ID</th><th>COMPLAINT</th><th>CATEGORY</th><th>LOCATION</th>@if (isAdmin) { <th>SUBMITTED BY</th> }<th>SUBMITTED</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+      <tbody>@for (item of filtered; track item.id) {
+        <tr>
+          <td class="complaint-id">#{{ item.id }}</td>
+          <td class="complaint-cell"><a class="report-title report-link" [routerLink]="detailLink(item)">{{ item.title }}</a><small>{{ item.description }}</small></td>
+          <td><span class="category">{{ item.category }}</span></td>
+          <td class="location-cell">{{ item.location }}</td>
+          @if (isAdmin) { <td>{{ citizenName(item) }}</td> }
+          <td>{{ item.submittedAt ? (item.submittedAt | date:'mediumDate') : 'Date unavailable' }}</td>
+          <td>@if (isAdmin) { <select class="status-select" [disabled]="busyId !== null" [value]="item.status" [attr.aria-label]="'Update status for ' + item.title" (change)="changeStatus(item,$any($event.target).value)"><option value="PENDING">Pending</option><option value="IN_PROGRESS">In progress</option><option value="RESOLVED">Resolved</option></select> } @else { <span class="status" [class]="'status ' + item.status.toLowerCase().replace('_','-')"><i></i>{{ item.status.replace('_',' ') | titlecase }}</span> }</td>
+          <td><div class="actions"><a class="button secondary compact" [routerLink]="detailLink(item)">{{ canEdit(item) ? 'View / edit' : 'View' }}</a>@if (isAdmin || item.status === 'PENDING') { <button class="icon-button danger" type="button" [disabled]="busyId !== null" (click)="remove(item)" [attr.aria-label]="'Delete ' + item.title" title="Delete complaint">Delete</button> }</div></td>
+        </tr>
+      }</tbody>
+    </table></div>
+    <div class="table-foot">Showing {{ filtered.length }} of {{ complaints.length }} complaint{{ complaints.length === 1 ? '' : 's' }}</div>
+  }
+</section>

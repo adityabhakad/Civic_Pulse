@@ -1,0 +1,45 @@
+@if (!role) {
+  <section class="home-hero guest-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">CIVICPULSE · YOUR COMMUNITY</p>
+      <h1>Report local issues.<br><span>Build better neighborhoods.</span></h1>
+      <p class="intro">Tell your local team what needs attention and follow each report from submission to resolution.</p>
+      <div class="hero-actions"><a class="button primary" routerLink="/register">Report an issue <span aria-hidden="true">→</span></a><a class="button secondary" routerLink="/login">Sign in</a></div>
+    </div>
+    <svg class="civic-art" viewBox="0 0 360 250" role="img" aria-label="Neighborhood with a marked civic issue">
+      <circle cx="280" cy="48" r="28" fill="#ffe6ad"/><path d="M0 215c42-27 84-27 125 0s84 27 125 0 75-26 110-5v40H0Z" fill="#d9e7fa"/>
+      <path d="m42 125 54-47 54 47v74H42Z" fill="#fff" stroke="#b9cdee" stroke-width="4"/><path d="m33 127 63-56 64 56" fill="none" stroke="#2865d8" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/><rect x="84" y="151" width="26" height="48" rx="3" fill="#eaf1fc"/><rect x="174" y="112" width="82" height="87" rx="7" fill="#eff5ff" stroke="#c7d8f1" stroke-width="4"/><path d="M190 132h18v18h-18zm31 0h18v18h-18zm-31 31h18v18h-18zm31 31h18v5h-18z" fill="#a9c3e7"/>
+      <path d="M300 97c0-22 17-39 38-39s38 17 38 39c0 29-38 66-38 66s-38-37-38-66Z" transform="translate(-31 0)" fill="#2865d8"/><circle cx="307" cy="97" r="14" fill="#fff"/><path d="m300 97 5 5 10-11" fill="none" stroke="#16a579" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/><path d="M0 224h360" stroke="#b7c8df" stroke-width="3" stroke-dasharray="10 10"/>
+    </svg>
+  </section>
+  <section class="section-heading"><div><p class="eyebrow">COMMUNITY SNAPSHOT</p><h2>Reports from your community</h2></div></section>
+  <section class="stats public-stats" aria-label="Public complaint statistics">
+    <article class="stat-card"><span class="stat-icon blue" aria-hidden="true">▤</span><div><p>Community reports</p><strong>{{ stats?.total ?? '—' }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon amber" aria-hidden="true">◷</span><div><p>Pending</p><strong>{{ stats?.pending ?? '—' }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon violet" aria-hidden="true">↻</span><div><p>In progress</p><strong>{{ stats?.inProgress ?? '—' }}</strong></div></article>
+    <article class="stat-card"><span class="stat-icon green" aria-hidden="true">✓</span><div><p>Resolved</p><strong>{{ stats?.resolved ?? '—' }}</strong></div></article>
+  </section>
+  @if (loading) { <div class="inline-loading" role="status"><span class="spinner"></span><span>Loading community statistics…</span></div> }
+  @if (error) { <div class="alert" role="alert"><span>{{ error }}</span><button class="button secondary" type="button" (click)="load()">Retry</button></div> }
+  <section class="how-it-works">
+    <div class="section-heading"><div><p class="eyebrow">SIMPLE AND TRANSPARENT</p><h2>How reporting works</h2></div></div>
+    <div class="steps-grid"><article><span class="step-number">01</span><h3>Report an issue</h3><p>Share what happened and where your community needs help.</p></article><article><span class="step-number">02</span><h3>Follow progress</h3><p>Sign in any time to see the latest status of your report.</p></article><article><span class="step-number">03</span><h3>See the change</h3><p>Track the issue through to resolution by your local team.</p></article></div>
+  </section>
+} @else if (isAdmin) {
+  <section class="home-hero role-hero"><div><p class="eyebrow">CIVICPULSE · ADMIN HOME</p><h1>Welcome, <span>{{ user()?.displayName }}</span></h1><p class="intro">Here is a live snapshot of community reports. Review activity and keep issues moving toward resolution.</p><div class="hero-actions"><a class="button primary" routerLink="/admin/complaints">Manage complaints <span aria-hidden="true">→</span></a><a class="button secondary" routerLink="/admin">Open dashboard</a></div></div><app-role-hero-diagram audience="admin" /></section>
+  <app-civic-workflow />
+  <section class="section-heading"><div><p class="eyebrow">COMMUNITY SNAPSHOT</p><h2>All complaint activity</h2></div></section>
+  <section class="stats" aria-label="Complaint statistics"><article class="stat-card"><span class="stat-icon blue" aria-hidden="true">▤</span><div><p>Total complaints</p><strong>{{ stats?.total ?? '—' }}</strong></div></article><article class="stat-card"><span class="stat-icon amber" aria-hidden="true">◷</span><div><p>Pending</p><strong>{{ stats?.pending ?? '—' }}</strong></div></article><article class="stat-card"><span class="stat-icon violet" aria-hidden="true">↻</span><div><p>In progress</p><strong>{{ stats?.inProgress ?? '—' }}</strong></div></article><article class="stat-card"><span class="stat-icon green" aria-hidden="true">✓</span><div><p>Resolved</p><strong>{{ stats?.resolved ?? '—' }}</strong></div></article></section>
+  @if (loading) { <div class="inline-loading" role="status"><span class="spinner"></span><span>Loading complaints…</span></div> }
+  @if (error) { <div class="alert" role="alert"><span>{{ error }}</span><button class="button secondary" type="button" (click)="load()">Retry</button></div> }
+  @else if (!loading) { <section class="panel recent-panel"><div class="panel-heading"><div><h2>Recently submitted</h2><p>The latest reports from citizens</p></div><a class="text-link" routerLink="/admin/complaints">View all complaints →</a></div>@if (complaints.length) { <div class="recent-list">@for (item of complaints.slice(0, 4); track item.id) { <a class="recent-row" [routerLink]="['/admin/complaints', item.id]"><span class="recent-marker">#{{ item.id }}</span><span class="recent-title"><strong>{{ item.title }}</strong><small>{{ item.category }} · {{ item.location }}</small></span><span class="status" [class]="'status ' + item.status.toLowerCase().replace('_','-')"><i></i>{{ item.status.replace('_',' ') }}</span></a> }</div> } @else { <div class="state empty"><h3>No complaints submitted yet</h3><p>New citizen reports will appear here.</p></div> }</section> }
+} @else {
+  <section class="home-hero role-hero"><div><p class="eyebrow">CITIZEN HOME</p><h1>Welcome, <span>{{ user()?.displayName }}</span></h1><p class="intro">Your reports help make the neighborhood better. Submit a local issue or check on reports you have already sent.</p><div class="hero-actions"><a class="button primary" routerLink="/citizen/complaints/new">＋ Report an issue</a><a class="button secondary" routerLink="/citizen/complaints">My complaints</a></div></div><app-role-hero-diagram audience="citizen" /></section>
+  <app-civic-workflow />
+  <section class="section-heading"><div><p class="eyebrow">YOUR REPORTS</p><h2>Complaint summary</h2></div><a class="text-link" routerLink="/citizen/complaints">View my complaints →</a></section>
+  <section class="stats" aria-label="Your complaint statistics"><article class="stat-card"><span class="stat-icon blue" aria-hidden="true">▤</span><div><p>My reports</p><strong>{{ stats?.total ?? '—' }}</strong></div></article><article class="stat-card"><span class="stat-icon amber" aria-hidden="true">◷</span><div><p>Pending</p><strong>{{ stats?.pending ?? '—' }}</strong></div></article><article class="stat-card"><span class="stat-icon violet" aria-hidden="true">↻</span><div><p>In progress</p><strong>{{ stats?.inProgress ?? '—' }}</strong></div></article><article class="stat-card"><span class="stat-icon green" aria-hidden="true">✓</span><div><p>Resolved</p><strong>{{ stats?.resolved ?? '—' }}</strong></div></article></section>
+  @if (loading) { <div class="inline-loading" role="status"><span class="spinner"></span><span>Loading your complaints…</span></div> }
+  @if (error) { <div class="alert" role="alert"><span>{{ error }}</span><button class="button secondary" type="button" (click)="load()">Retry</button></div> }
+  @else if (!loading && complaints.length) { <section class="panel recent-panel"><div class="panel-heading"><div><h2>Recent updates</h2><p>Your latest submitted reports</p></div><a class="text-link" routerLink="/citizen/complaints">View all →</a></div><div class="recent-list">@for (item of complaints.slice(0, 4); track item.id) { <a class="recent-row" [routerLink]="['/citizen/complaints', item.id]"><span class="recent-marker">#{{ item.id }}</span><span class="recent-title"><strong>{{ item.title }}</strong><small>{{ item.category }} · {{ item.location }}</small></span><span class="status" [class]="'status ' + item.status.toLowerCase().replace('_','-')"><i></i>{{ item.status.replace('_',' ') }}</span></a> }</div></section> }
+  @else if (!loading) { <section class="panel state empty"><h3>No reports yet</h3><p>When you submit an issue, its status will appear here.</p><a class="button primary" routerLink="/citizen/complaints/new">Report an issue</a></section> }
+}

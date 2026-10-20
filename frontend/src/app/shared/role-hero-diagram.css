@@ -1,0 +1,8 @@
+:host { display: block; width: min(34%,320px); min-width: 265px; flex: 0 1 320px; }
+.hero-diagram { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 13px 21px #31578a12); }
+@media (max-width: 760px) {
+  :host { width: 250px; min-width: 220px; flex-basis: 250px; }
+}
+@media (max-width: 560px) {
+  :host { display: none; }
+}
