@@ -30,14 +30,14 @@ Start MySQL first. Open two terminals from the project folder.
 Backend (PowerShell):
 
 ```powershell
-cd A:\Prep\MyProjects\CivicPulse\backend
+cd A:\CivicPulse\backend
 bash.exe -lc './mvnw spring-boot:run'
 ```
 
 Frontend (PowerShell):
 
 ```powershell
-cd A:\Prep\MyProjects\CivicPulse\frontend
+cd A:\CivicPulse\frontend
 npm.cmd start
 ```
 
